@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diklat Instalasi Farmasi</title>
+<style>
+  :root{
+    --navy:#21295C; --deepblue:#065A82; --teal:#1C7293; --ice:#EAF3F7;
+    --amber:#E8A33D; --text:#1B2733; --grey:#5B6B76; --white:#FFFFFF;
+    --danger:#B23A3A; --good:#1E8F5F;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--ice);color:var(--text);}
+  h1,h2,h3{font-family:Georgia,'Cambria',serif;margin:0 0 .4em 0;color:var(--navy);}
+  .app{max-width:900px;margin:0 auto;min-height:100vh;background:var(--white);box-shadow:0 0 40px rgba(0,0,0,.06);}
+  .topbar{background:var(--navy);color:var(--white);padding:18px 24px;display:flex;justify-content:space-between;align-items:center;}
+  .topbar .title{font-family:Georgia,serif;font-size:19px;font-weight:bold;}
+  .topbar .sub{font-size:12px;color:#AFC4D6;margin-top:2px;}
+  .topbar button{background:transparent;border:1px solid #4A5A8C;color:#CADCE8;padding:7px 14px;border-radius:6px;font-size:12.5px;cursor:pointer;}
+  .topbar button:hover{background:#2E3872;}
+  .content{padding:32px 28px 60px 28px;}
+  .progress{display:flex;gap:6px;margin-bottom:28px;}
+  .progress div{flex:1;height:5px;border-radius:3px;background:#DDE7ED;}
+  .progress div.done{background:var(--teal);}
+  .progress div.now{background:var(--amber);}
+  .card{background:var(--ice);border-radius:10px;padding:22px 24px;margin-bottom:16px;}
+  label{display:block;font-size:13.5px;color:var(--grey);margin-bottom:6px;font-weight:600;}
+  input[type=text]{width:100%;padding:11px 12px;border:1px solid #C9D6DE;border-radius:7px;font-size:15px;margin-bottom:16px;background:var(--white);}
+  input[type=password]{width:100%;padding:11px 12px;border:1px solid #C9D6DE;border-radius:7px;font-size:15px;background:var(--white);}
+  .btn{display:inline-block;background:var(--teal);color:var(--white);border:none;padding:12px 26px;border-radius:7px;font-size:15px;font-weight:600;cursor:pointer;}
+  .btn:hover{background:var(--deepblue);}
+  .btn.amber{background:var(--amber);color:var(--navy);}
+  .btn.amber:hover{background:#D6922E;}
+  .btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--teal);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .qnum{font-size:12.5px;color:var(--teal);font-weight:700;letter-spacing:.4px;margin-bottom:6px;}
+  .qtext{font-size:16px;font-weight:600;margin-bottom:14px;line-height:1.5;}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:1px solid #D8E3E9;border-radius:8px;margin-bottom:9px;cursor:pointer;background:var(--white);transition:border-color .15s;}
+  .opt:hover{border-color:var(--teal);}
+  .opt.selected{border-color:var(--teal);background:#EAF6F5;}
+  .opt input{margin-top:3px;}
+  .opt .otext{font-size:14.5px;line-height:1.4;}
+  .navrow{display:flex;justify-content:space-between;margin-top:22px;}
+  .slideimg{width:100%;border-radius:8px;border:1px solid #D8E3E9;display:block;}
+  .matcard{background:var(--white);border:1px solid #D8E3E9;border-radius:10px;padding:26px 26px 30px 26px;min-height:340px;}
+  .matcard .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:1.2px;color:var(--teal);margin-bottom:8px;}
+  .matcard h2{font-size:22px;margin-bottom:14px;}
+  .matbody{font-size:14.5px;line-height:1.65;color:var(--text);margin:0 0 14px 0;}
+  .matlist{margin:0 0 14px 0;padding-left:20px;}
+  .matlist li{font-size:14px;line-height:1.6;margin-bottom:7px;color:var(--text);}
+  .matnumbered{margin:0 0 14px 0;padding-left:20px;}
+  .matnumbered li{font-size:14px;line-height:1.6;margin-bottom:9px;color:var(--text);}
+  .mattable{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:13px;}
+  .mattable th{background:var(--navy);color:var(--white);padding:8px 10px;text-align:left;}
+  .mattable td{padding:8px 10px;border-bottom:1px solid #E4EBEF;}
+  .matcolumns{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:14px;}
+  .matcol{background:var(--ice);border-radius:8px;padding:14px;}
+  .matcol h4{margin:0 0 8px 0;color:var(--navy);font-family:Georgia,serif;font-size:14.5px;}
+  .matcol ul{margin:0;padding-left:18px;}
+  .matcol li{font-size:12.5px;line-height:1.5;margin-bottom:5px;}
+  .matnote{background:#FCEFDD;color:#8A5A0F;border-radius:8px;padding:12px 15px;font-size:13.5px;line-height:1.55;margin-top:4px;}
+  .matchecklist{margin-bottom:8px;}
+  .checkitem{font-size:14px;padding:8px 0;border-bottom:1px dashed #E4EBEF;color:var(--text);}
+  .checkitem:last-child{border-bottom:none;}
+  .slidecounter{text-align:center;color:var(--grey);font-size:13px;margin:10px 0 18px 0;}
+  .materi-html{background:var(--white);border:1px solid #D8E3E9;border-radius:10px;padding:26px 26px 20px 26px;min-height:320px;}
+  .materi-html .eyebrow{font-size:11.5px;color:var(--teal);font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px;}
+  .materi-html h2{font-size:22px;margin-bottom:14px;}
+  .materi-html p{font-size:14.5px;line-height:1.65;color:var(--text);margin:0 0 12px 0;}
+  .materi-html ul{margin:0 0 14px 20px;padding:0;}
+  .materi-html li{font-size:14px;line-height:1.65;margin-bottom:7px;color:var(--text);}
+  .materi-html table{width:100%;border-collapse:collapse;margin:6px 0 16px 0;font-size:13.5px;}
+  .materi-html th{background:var(--navy);color:var(--white);padding:8px 10px;text-align:left;}
+  .materi-html td{padding:8px 10px;border-bottom:1px solid #E4EBEF;}
+  .materi-html .box-warn{background:#FCEFDD;border-left:4px solid var(--amber);padding:14px 16px;border-radius:8px;margin:14px 0;font-size:13.5px;color:#8A5A0F;}
+  .materi-html .box-info{background:#E4F0F6;border-left:4px solid var(--teal);padding:14px 16px;border-radius:8px;margin:14px 0;font-size:13.5px;color:var(--deepblue);}
+  .materi-html .box-warn b, .materi-html .box-info b{color:inherit;}
+  .materi-html .step-list{counter-reset:step;list-style:none;margin:0 0 14px 0;padding:0;}
+  .materi-html .step-list li{counter-increment:step;position:relative;padding-left:36px;margin-bottom:11px;font-size:14px;line-height:1.55;}
+  .materi-html .step-list li::before{content:counter(step);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--teal);color:var(--white);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;}
+  .materi-html .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .materi-html .tag{background:var(--ice);color:var(--deepblue);font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:12px;}
+  .banner{padding:16px 18px;border-radius:8px;margin-bottom:18px;font-size:14px;}
+  .banner.info{background:#E4F0F6;color:var(--deepblue);}
+  .banner.warn{background:#FCEFDD;color:#8A5A0F;}
+  .resultbig{text-align:center;padding:28px 10px;}
+  .scorecircle{width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px auto;font-family:Georgia,serif;font-size:44px;font-weight:bold;color:var(--white);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;background:var(--navy);color:var(--white);padding:9px 10px;position:sticky;top:0;}
+  td{padding:9px 10px;border-bottom:1px solid #E4EBEF;}
+  tr:hover td{background:#F3F8FA;}
+  .badge{padding:3px 10px;border-radius:12px;font-size:11.5px;font-weight:700;display:inline-block;}
+  .badge.pass{background:#DCF3E7;color:var(--good);}
+  .badge.fail{background:#FBE3E3;color:var(--danger);}
+  .badge.pending{background:#EEE;color:var(--grey);}
+  .statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+  .statbox{background:var(--navy);color:var(--white);border-radius:9px;padding:16px;text-align:center;}
+  .statbox .num{font-family:Georgia,serif;font-size:26px;font-weight:bold;}
+  .statbox .lbl{font-size:11.5px;color:#AFC4D6;margin-top:3px;}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{padding:8px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;background:var(--ice);color:var(--teal);border:1px solid #D8E3E9;}
+  .tab.active{background:var(--teal);color:var(--white);border-color:var(--teal);}
+  .modcard{border:1px solid #D8E3E9;border-radius:10px;padding:20px;margin-bottom:14px;cursor:pointer;transition:border-color .15s, background .15s;}
+  .modcard:hover{border-color:var(--teal);background:#F5FAFB;}
+  .modcard h3{margin-bottom:6px;}
+  .modcard .meta{font-size:12px;color:var(--teal);font-weight:700;margin-bottom:8px;}
+  .modcard p{font-size:13.5px;color:var(--grey);margin:0;}
+  .foot{text-align:center;color:var(--grey);font-size:12px;padding:20px;}
+  .eyebrow{font-size:11.5px;color:var(--teal);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+  .chip{display:inline-block;background:var(--ice);color:var(--deepblue);border:1px solid #CFE0E8;padding:5px 12px;border-radius:14px;font-size:12.5px;margin:2px 5px 2px 0;font-weight:600;}
+  .steprow{display:flex;align-items:flex-start;margin-bottom:12px;}
+  .stepcircle{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;font-weight:700;font-size:13px;margin-right:12px;flex-shrink:0;}
+  .mtable{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0 4px 0;}
+  .mtable th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px;font-weight:600;}
+  .mtable td{padding:8px 10px;border-bottom:1px solid #E4EBEF;}
+  .mpage p{line-height:1.6;font-size:14.5px;}
+  .mpage ul{margin:6px 0 14px 0;padding-left:20px;line-height:1.6;font-size:14.5px;}
+  .mpage li{margin-bottom:6px;}
+  .mpage h3{font-size:16.5px;margin-top:6px;color:var(--navy);}
+  .mpage h2{font-size:22px;margin-bottom:6px;}
+  .mpage-wrap{background:var(--white);border:1px solid #D8E3E9;border-radius:10px;padding:26px 26px 22px 26px;min-height:320px;}
+  @media (max-width:600px){ .statgrid{grid-template-columns:repeat(2,1fr);} .content{padding:20px 16px 50px 16px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="title">Diklat Instalasi Farmasi</div>
+      <div class="sub" id="topSub">Pilih modul pelatihan</div>
+    </div>
+    <button id="adminBtn" onclick="showAdminGate()">Dashboard Admin</button>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+<div class="foot">Portal Diklat Internal — Instalasi Farmasi RS</div>
+
+<script>
+/* ================= DAFTAR PEGAWAI (ROSTER) ================= */
+/* Sumber: Data_karyawan.xlsx. Untuk update daftar, minta Claude memproses file Excel terbaru. */
+const ROSTER = [{"hash": "a0037b8fecfb1321700c9e3261cbe2f9451e82cb5adca7ec0c19d2868c40e0a3", "nama": "Apt. Hermanto Putra, S. Farm"}, {"hash": "6b2f1ff0b4c3b66c988e2d992cc012e756feaf747cf60f0cd4b4b76b013e7197", "nama": "Apt. Nitha Dwi Agustin Kusumawati, S.Farm"}, {"hash": "fe58ef7102cddcb88a0752787c790a24785c740df314a7622c40e00e11d445d6", "nama": "Apt. Lesty Kurniawati, S.Farm"}, {"hash": "ce5073960afa858b4b07f7351bb9e5212c9e2b736ab930866544883a7af78060", "nama": "Apt. Dini Intan Afrida, S.Farm"}, {"hash": "c449825a2d070a6bd32722e95cf7d3529bf1f18241d1106357135357f00d296f", "nama": "Apt. Mareta Putri Anugrahswari, S.Farm"}, {"hash": "f4f9fad8ea43314c0fac1c104104aca850b1ec8a04f9e4b7639cfc932b831ede", "nama": "Apt. Amartia Puteri Wahyudiandi, S.Farm"}, {"hash": "bbc9d5e9f8055739f558f14947941bcdace5dc6b7a92a82c15e1bc5b937adc0a", "nama": "Apt. Farhan Athallah Rafif, S.Farm"}, {"hash": "b78c60552e3402fda4495f31816240573981e60c4c10b488fe61edb3d0a0ff5b", "nama": "Soni Kurniawan, SE"}, {"hash": "68b658542069600df8b2b0fe41ae792d4c59c277a045259936094e6490f50a42", "nama": "Fenny Mulyati, A.Md.Farm."}, {"hash": "5b283a717226af8b6e4d6f0d9562d2537c2e50a7502ae9ad4cb9b36999cfc2b7", "nama": "Santi Siti Khodijah, A.Md.Farm."}, {"hash": "72873546907ca55b6222c4684a969c4695e58a31ab9202f8145357c88cace686", "nama": "Eka Mazliana Dewi, A.Md.Farm"}, {"hash": "2aa39e6ce4a15f82a8597b265598c7e429239c3c8b5ad2a808938468a4630b6d", "nama": "Faurizal Fajar Setyanto, S.M."}, {"hash": "2cb45d901f5a88a11b7b8b5d81535191a95f0af715eac88a02a9266ef7122c63", "nama": "Rahma Nur Aini, A.Md.Farm."}, {"hash": "2972a4cfed37ae20ee80b59e9b3be9eb1a4380d8aaa3e863fe614d7d6c820184", "nama": "Adhelita Tri Cahyani, A.Md.Farm."}, {"hash": "a2871446cad00e1462424b64d6fbde524a7f37f7c4c2752b10789d0445f239f3", "nama": "Annisa Alfi Nur'aini, A.Md.Farm."}, {"hash": "5dac8f57fccaa391339531daae0fe18a961e9d7dc6a84c3a8db2e1a3b6d06eba", "nama": "Arsa Nur Meidy, A.Md.Farm"}, {"hash": "bc30208bccb6f6dce91983e87a30527e2be505d7ecb33f5bfae2125844c33415", "nama": "Triyanti Agustina, A.Md.Farm"}, {"hash": "d2c6280354fd4925ae9900f055c731090f558eb40ba4bfb34ab4a3aa19b0c3f2", "nama": "Nova Afrianti Dewi, A.Md Farm"}, {"hash": "5e341bb9449a7866ac47c6e3c53f191cc6d5e91b84f854ef08df2c09726506fc", "nama": "Lia Mei Astuti, A.Md.Farm."}, {"hash": "bed45e44484cab4e155a90331bb7d13cb78dfa894f11ede0cb5090db369ab1be", "nama": "Herika Juli Andani, S. Farm"}, {"hash": "df750aa88f759e6e74897113f42b64ed4020b5c548866128fb9108cc2e4c8688", "nama": "Mutiara Rosa Widianingsih, A.Md.Farm."}, {"hash": "82ba0f52cef921379dad7cd200f71a021ad9f6e3fd6b58bf92d75ea884278e46", "nama": "Yuni Arizka, A.Md.Farm."}, {"hash": "1794f80c7f953fe2111fbf4c757fc09f2125876e360c0b7727cfd8bbb6a33422", "nama": "Farrel Alfa Anggaraksa"}, {"hash": "52f1b9f10970d1822b5bb7c1b71f22a99e4177e444c00f213f06fc2fbf73587f", "nama": "Risma Rahmawati, A.Md. Farm."}, {"hash": "7c458ee270da733d4ab3c26d9bb03582eede59745dd3ac16131f2ae61448d530", "nama": "Afifah Arda Maharani, A.Md.Farm"}, {"hash": "f7ec6ba292749d496b829ae5a9c3baee76a1ff135ef8a068ade0ec0c60559e4b", "nama": "Nur Aini Pramita, A.Md.Farm."}, {"hash": "e62bdf7c62f973937975774c79be306b9e6ed230aee783f27bf8ef04e59dd3c3", "nama": "Violita Anggie Eka Rahmawati, A.Md.Farm."}, {"hash": "bb2448b7a5d6000ce58b691df034b944756157e92dc2af65a713165caad11dd7", "nama": "Alfian Rachmad, A.Md.Farm."}, {"hash": "5954c799e6c76a06411cddbf25fdbde7dc93cd0a1523dd05c20c2ac41d97a891", "nama": "Galuh Dwi Agustin, A.Md.Farm"}, {"hash": "aa6e4859c203f7787789c72d157bbe22574c5a2cc51d6e030200f273729e68a8", "nama": "Ibriana Octa Srikandi Hartono, A.Md. Farm."}, {"hash": "a2567ae2b64eef4ab0d1101d60c96180ca8204cdc002c587d4cef6175a2474a2", "nama": "Bagus Cahyo Roufianto, A.Md.Farm."}, {"hash": "e227e3e8decfbca12e23e479cb0a2a2dc559450f6d3baa9483b6337d68f45338", "nama": "Amanda Safira, A.Md. Farm."}, {"hash": "ae7ac029100c3b1a8e25b56f63dd997feaa4e2ab4cfbcc16d5fa27e1fa4bb8d5", "nama": "Alnessia Firdani, A.Md. Farm"}, {"hash": "8bd9702bea66de1bbef54b235d17eeb72f75aa2a456d587f0ae0eeccb858e5a6", "nama": "Reza Enjelina Aditya, A.Md. Farm."}, {"hash": "4b9b4de21d961882881d14b02f200954102d75ef8a004ecff850c24be8e0aef2", "nama": "Adinda Mega, Amd.Farm"}, {"hash": "533a4a24b748068d616ca0f5944ba9938e875b80fd16a1990decf0bb67da8f7f", "nama": "Diva Aprilia Putri Navy, Amd.Farm"}, {"hash": "2bb69a145cb351aceaef4562a7d83f381ad5f53a793542ef7be07df913a9ef8d", "nama": "Adelia Ayu Christanti Amd.Farm"}, {"hash": "b7aba0a6dea1a6e7c133bdb4f0d516c303e57da175f9d2322dc8e6ee524c2696", "nama": "Nabilah Alfia Salma, Amd.Farm"}, {"hash": "b994b96d4dcb8476f625ee06384ced29154c405b984b26dbd9ea277fcd2bc10d", "nama": "NURUL MUJAYANAH Amd.Kep"}, {"hash": "4a4a07b89ba9cbb1f43461c7127c1baaea0c7689d84f39028b0b99955069b85c", "nama": "Siti Hardiyanti Rohmah, S.Kep.,Ners"}, {"hash": "298c5f2b7937cc5c44d6e9e349d28aec144c8771adeab28e22931dd301f0f9e4", "nama": "Nur Ika Santya Devi, Amd. Kep"}, {"hash": "2ed64f86b0dab52cefaaedc942130c800555224dd5ea9d744a61cacd196fa819", "nama": "Lailiya sulistina"}, {"hash": "910ea84df8d4ad0310302f1e5a3c1bb56b8935775fb85154684e3fbff349b567", "nama": "Rika Yunita Sari, A.Md.Kep"}, {"hash": "7fb71e276e566b9f58ea245662aaf5025f8ddf1bcf99fe66d3bdf40d6dbf61e4", "nama": "Yusnia Vindy Amd. Kep"}, {"hash": "c6dc63eef08b3d215e799ba24ecfba1d9d81ecfb044a9bf6f12ebcad2a463c46", "nama": "Adibah Nurul Awaliyah S. Kep., Ns"}, {"hash": "04fecf5c1f668686d223f5a6248733496b03c81c37f8480849a8b09df995eddb", "nama": "Siti Maufiroh S. Kep., Ns"}, {"hash": "cb563c1964c24d94778ddc88091db5ef862f633571dda76a03c10f2545d201e1", "nama": "Anatasya Irma Suryani, S.Kep., Ns"}, {"hash": "261538355e6cf669034947c4f5dfa2f36d98a08e946213f0cb638e4311e04d54", "nama": "Anik Musyayadah, S.Kep., Ns"}, {"hash": "7d5c65a8a3e7a07b125af83c8436efdd31d90fe2e171ab587d180c03fd5b1076", "nama": "Zainal Abidin A.Md.Kep"}, {"hash": "c7bb4412733af8cb1891c19b22fa05ba6e04d1191839e1bad552ae8509da49e2", "nama": "Lilik Rohma, Amd.Kep"}, {"hash": "7918cb91ad6a42d94c9a874406ff2b04a2a3585e36d02f31b192ca391b533e6d", "nama": "Emilia kuswardani, Amd Kep"}, {"hash": "3cb64f3fbc6894737108674cf1f4dbdcc7d4285cdd894cf5a08b758be4487fdb", "nama": "Fajar Adhi Priyono,Amd.Kep"}, {"hash": "855d0cb892bfd9dbd49e5de085e66f12e4a19c045900b25c043c8af5a26b0a89", "nama": "RAMADHAN HARAHAP S.KEP., NS"}, {"hash": "88070be0b0ffc84a35931525124cd09cbb8814ab03dd144984892c306607642d", "nama": "Dicky Arga Yogaswara.A.Md.Kep"}, {"hash": "8c79176d94c9fc121319b23d0fa86b58e343a806bf4a351c98474175dc4a12b9", "nama": "Mita Dewi Nurandila S. Kep. Ns"}, {"hash": "03c48ee107b4d7dd760569c2f36a5bc770e40f9847022adb4b8236a2454a960a", "nama": "Dika Ardinta.S.Kep.,Ns"}, {"hash": "a758638becb577405bde8605cbc02884711ec56b110e53115eebe28e0c4f51fd", "nama": "Ima Setyowati, Amd. Kep"}, {"hash": "78eb05db5cd11e8d04b1313d2586ed0316320f6a6713695fad62e47a43eb9092", "nama": "TIASSHOLINA NUARIKA RAHAYU, S.Tr.Keb., Bdn."}, {"hash": "db67d79bb831a26e62ab58460bf6137a802e04bbb10d7ff5f6fac228a1968467", "nama": "WAHYUNI, A.Md.Keb."}, {"hash": "2ed64f86b0dab52cefaaedc942130c800555224dd5ea9d744a61cacd196fa819", "nama": "LAILIYA SULISTINA, A.Md. Keb"}, {"hash": "054e83f09e1df1755a4526d7a2c13cebd5d04e83cbb5c0c5dbf983821855a339", "nama": "Farid Hidayatullah. A.Md.Kep"}, {"hash": "03c90e6b47553f30f5ea0339d1351a715a05e6f48b1013b05afb694b4768c722", "nama": "Sri Siti Sulanjari., S.kep., Ns"}, {"hash": "b7de72c8e06d4561eb7b92a88fd14388c4d35dc991bbc18cf4296904180076a9", "nama": "Diah Feby Farahnisyah, S.Kep Ns"}, {"hash": "686861569636144f592250641bc9997d7fc6b15dec6b1968abdf14726b90b1bd", "nama": "Muhamad Ghofur.A.Md Kep"}, {"hash": "bf3642631f2b34f6e504bd0686acd6bc9d9aa02f251be0dcb96e577a16d2424d", "nama": "Eva Wakhidian, A.Md Keb"}, {"hash": "10a08ac2cf9e4f6593df774de40e26c3397ddc14dd1f05da9c8db52c9181d6a5", "nama": "Luhur Muttaqin Abdillah, Amd. Kep"}, {"hash": "d77d3074e6bea19ae70aaaab4dc3d39f61ceda43c02614ac6bd14c8e1c09c3e6", "nama": "Fitriah Amd. Kep"}, {"hash": "4dd0c0b88594363a4b7c73c64baa0c8f17b849220783744d53e792b239cced1e", "nama": "Mei Nur Cahyatiningsih, S.Kep., Ns"}, {"hash": "e6c27cd0482e16fd2fdf1b09e5f1a132b6739ed4dd11b3cde5faf2549a000bb8", "nama": "Septia Eris Giani, S.Kep,Ns"}, {"hash": "ae1037544e623fcc32531d20fa7a16786873db3abfdc16bfa371aa6c93f5a3e6", "nama": "Rike Okkristalia S. Kep., Ns"}, {"hash": "d75d10fcb3ce503488254f509b6cfbbc7a224feaf2117174be3400e7fa8650db", "nama": "Ayu Maulidatun S.Kep., Ns"}, {"hash": "fb0e97c765cbf9e22cc71cae6eb11e084aaf966ddfba40513441df1fed234fd9", "nama": "Nafisha Rahman S. Kep., Ns"}, {"hash": "39faa489e92ef957ed0187008a3b19ab8764ec170b9e645350db68a078161989", "nama": "Rosi Dewi Saputri S.Kep.,Ns"}, {"hash": "094a48462cf4a72763b8f4e5cbe744c2d56f4ab158f3bee09863d5ab8a1232e4", "nama": "Dinik purwahyuningsih"}, {"hash": "e2010c19f7fff25a41f56ddd09acd79f3cfbdcf7a4f183e19fdf37ebda543d41", "nama": "Yuliatun, AMd. Kep"}, {"hash": "912194502dffb74d2a9c07419bd3478e36dc53b7c34812d1a92e9f7debbf4a21", "nama": "Nofia Riandini, A.Md.Kep"}, {"hash": "0a8c30cf8129860cae78617534140fffa47b6faccda6b974de768fbd01e8392e", "nama": "M. Syaifuddin Amd. Kep"}];
+async function sha256Hex(text){
+  const enc = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function findByNip(nip){
+  const hash = await sha256Hex(nip);
+  return ROSTER.find(r => r.hash === hash);
+}
+
+/* ================= MODULE DATA ================= */
+/* Untuk menambah modul baru: tambahkan entri baru ke object MODULES di bawah ini,
+   dengan struktur yang sama seperti modul "akreditasi". */
+const MODULE_CATALOG = {"akreditasi": {"title": "Akreditasi Rumah Sakit & PKPO", "description": "Standar PKPO (Pelayanan Kefarmasian & Penggunaan Obat) dan peran staf farmasi dalam kesiapan akreditasi.", "kkm": 80, "questionCount": 16, "pageCount": 13, "file": "modules/akreditasi.json"}, "ham_elektrolit": {"title": "Pengelolaan Obat High Alert (HAM) & Elektrolit Pekat", "description": "SKP 3 & PKPO 3/3.1 — kategori HAM, penyimpanan elektrolit pekat, dan prinsip 5 Benar pemberian obat.", "kkm": 80, "questionCount": 19, "pageCount": 10, "file": "modules/ham_elektrolit.json"}, "obat_emergensi": {"title": "Pengelolaan Obat & Alat Kesehatan Emergensi", "description": "PKPO 3.2 — troli/box emergensi, alur Code Blue, dan tata kelola obat/alkes kegawatdaruratan.", "kkm": 80, "questionCount": 15, "pageCount": 9, "file": "modules/obat_emergensi.json"}, "ppi": {"title": "Pencegahan &amp; Pengendalian Infeksi (PPI) untuk Farmasi", "description": "Kewaspadaan standar dan kewaspadaan transmisi dalam pelayanan kefarmasian sehari-hari.", "kkm": 80, "questionCount": 12, "pageCount": 10, "file": "modules/ppi.json"}};
+let MODULES = {};
+async function loadModule(id){
+  if(MODULES[id]) return MODULES[id];
+  const cfg = MODULE_CATALOG[id];
+  if(!cfg) throw new Error('Modul tidak dikenal: ' + id);
+  const res = await fetch(cfg.file, { cache: 'no-store' });
+  if(!res.ok) throw new Error('HTTP ' + res.status + ' saat memuat ' + cfg.file);
+  const data = await res.json();
+  MODULES[id] = data;
+  return data;
+}
+async function ensureAllModulesLoaded(){
+  const ids = Object.keys(MODULE_CATALOG);
+  await Promise.all(ids.map(id => loadModule(id).catch(e => { console.error('Gagal memuat modul', id, e); })));
+}
+
+/* ================= STATE ================= */
+let state = { moduleId:null, name:"", staffId:"", pretestAnswers:[], posttestAnswers:[], slideIdx:0, pretestScore:null, posttestScore:null, readOnlyMode:false };
+let currentQIdx = 0;
+let currentPhase = ""; // 'pretest' | 'posttest'
+let adminModuleFilter = 'all';
+let adminViewMode = 'detail'; // 'detail' | 'pivot'
+
+/* ================= STORAGE: GOOGLE FORM (tulis) + APPS SCRIPT (baca) ================= */
+/* Versi GitHub Pages: tidak ada window.storage (itu khusus artifact Claude),
+   jadi penyimpanan utama pakai Google Form -> Google Sheets, dibaca kembali via
+   Apps Script Web App (teknik JSONP, aman dari CORS). Kalau nanti form/script
+   berubah, update GFORM_CONFIG dan GAPPS_SCRIPT_URL di bawah ini. */
+const GFORM_CONFIG = {
+  actionUrl: "https://docs.google.com/forms/d/e/1FAIpQLSe0QyDcOdetdvMg1KemUiX-WSUQ6Nc8XszipoWF1lvAbLHVmA/formResponse",
+  fields: {
+    name: "entry.1204080697",
+    staffId: "entry.1684234154",
+    moduleTitle: "entry.644160059",
+    pretestScore: "entry.871486590",
+    posttestScore: "entry.985894930",
+    status: "entry.799099750",
+    timestamp: "entry.1876257130"
+  }
+};
+const GAPPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwa_CqyJnv4TRZhVwRgZgFVpbEZHZgvPhJn9Db9erhfegWnrV-4G1SUeiMTIJPTR-ld/exec";
+
+async function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+function submitToGoogleForm(record){
+  return new Promise((resolve) => {
+    try{
+      let iframe = document.getElementById('gform_hidden_iframe');
+      if(!iframe){
+        iframe = document.createElement('iframe');
+        iframe.name = 'gform_hidden_iframe';
+        iframe.id = 'gform_hidden_iframe';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      }
+      const values = {};
+      values[GFORM_CONFIG.fields.name] = record.name;
+      values[GFORM_CONFIG.fields.staffId] = record.staffId;
+      values[GFORM_CONFIG.fields.moduleTitle] = record.moduleTitle;
+      values[GFORM_CONFIG.fields.pretestScore] = record.pretestScore;
+      values[GFORM_CONFIG.fields.posttestScore] = record.posttestScore;
+      values[GFORM_CONFIG.fields.status] = record.status;
+      values[GFORM_CONFIG.fields.timestamp] = new Date(record.timestamp).toLocaleString('id-ID');
+
+      const form = document.createElement('form');
+      form.action = GFORM_CONFIG.actionUrl;
+      form.method = 'POST';
+      form.target = 'gform_hidden_iframe';
+      Object.keys(values).forEach((key) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = values[key];
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+      form.submit();
+      setTimeout(() => { try{ form.remove(); }catch(e){} }, 1500);
+      setTimeout(() => resolve(true), 700);
+    }catch(e){
+      console.error('gform submit failed', e);
+      resolve(false);
+    }
+  });
+}
+
+async function saveRecord(rec){
+  const maxAttempts = 3;
+  for(let attempt=1; attempt<=maxAttempts; attempt++){
+    const ok = await submitToGoogleForm(rec);
+    if(ok) return { ok:true, attempts:attempt };
+    if(attempt < maxAttempts){ await sleep(800 * attempt); }
+  }
+  return { ok:false, reason:'error', attempts:maxAttempts };
+}
+
+function findModuleIdByTitle(title){
+  const found = Object.keys(MODULES).find(id => MODULES[id].title === title);
+  return found || null;
+}
+function fetchViaJsonp(url, timeoutMs){
+  return new Promise((resolve) => {
+    const callbackName = 'gsheetCb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    let settled = false;
+    const cleanup = () => {
+      delete window[callbackName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    };
+    window[callbackName] = (data) => {
+      if(settled) return;
+      settled = true;
+      cleanup();
+      resolve(data);
+    };
+    const script = document.createElement('script');
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+    script.onerror = () => {
+      if(settled) return;
+      settled = true;
+      cleanup();
+      resolve({ error:true, message:'Gagal memuat script JSONP.' });
+    };
+    document.body.appendChild(script);
+    setTimeout(() => {
+      if(settled) return;
+      settled = true;
+      cleanup();
+      resolve({ error:true, message:'Waktu tunggu habis (timeout).' });
+    }, timeoutMs || 8000);
+  });
+}
+async function listAllRecords(){
+  try{
+    const rows = await fetchViaJsonp(GAPPS_SCRIPT_URL, 8000);
+    if(rows && rows.error){ return { records:[], unavailable:false, error:true, message: rows.message }; }
+    if(!Array.isArray(rows)){ return { records:[], unavailable:false, error:true, message:'Format data tidak dikenali.' }; }
+    const records = rows.map(row => {
+      const moduleTitle = (row['Modul'] || '').toString().trim();
+      const moduleId = findModuleIdByTitle(moduleTitle);
+      const waktuStr = (row['Waktu'] || '').toString().trim();
+      const tsFallback = (row['Timestamp'] || '').toString().trim();
+      const candidate = waktuStr || tsFallback;
+      let iso = new Date().toISOString();
+      const parsedDate = new Date(candidate);
+      if(candidate && !isNaN(parsedDate.getTime())){ iso = parsedDate.toISOString(); }
+      return {
+        moduleId: moduleId,
+        moduleTitle: moduleTitle,
+        staffId: (row['NIP (Nomor Induk Karyawan)'] || '').toString().trim(),
+        name: (row['Nama Lengkap '] || row['Nama Lengkap'] || '').toString().trim(),
+        pretestScore: parseInt(row['Skor Pre Test'], 10) || 0,
+        posttestScore: parseInt(row['Skor Post Test'], 10) || 0,
+        status: (row['Status'] || '').toString().trim(),
+        timestamp: iso
+      };
+    }).filter(r => r.staffId);
+    return { records, unavailable:false };
+  }catch(e){ console.error('list failed', e); return { records:[], unavailable:false, error:true, message: e.message }; }
+}
+
+/* ================= RENDER: MODULE SELECT (HOME) ================= */
+function moduleContentCount(m){ if(m.slides) return m.slides.length; if(m.materiPages) return m.materiPages.length; return 0; }
+function renderStart(){
+  document.getElementById('topSub').textContent = "Pilih modul pelatihan";
+  let cardsHtml = '';
+  Object.keys(MODULE_CATALOG).forEach(id=>{
+    const c = MODULE_CATALOG[id];
+    cardsHtml += `<div class="modcard" onclick="selectModule('${id}')">
+      <div class="meta">${c.questionCount} SOAL · KKM ${c.kkm} · ${c.pageCount} HALAMAN MATERI</div>
+      <h3>${c.title}</h3>
+      <p>${c.description}</p>
+    </div>`;
+  });
+  document.getElementById('content').innerHTML = `
+    <p style="color:var(--grey);font-size:14.5px;line-height:1.6;">
+      Pilih salah satu modul di bawah untuk memulai. Setiap modul terdiri dari <b>Pre-Test</b> → <b>Membaca Materi</b> → <b>Post-Test</b>.
+    </p>
+    ${cardsHtml}
+  `;
+}
+async function selectModule(id){
+  state.moduleId = id;
+  document.getElementById('topSub').textContent = MODULE_CATALOG[id] ? MODULE_CATALOG[id].title : 'Memuat modul...';
+  document.getElementById('content').innerHTML = `<p style="color:var(--grey);">Memuat materi modul...</p>`;
+  try{
+    await loadModule(id);
+  }catch(e){
+    document.getElementById('content').innerHTML = `<div class="banner warn">Gagal memuat modul ini (${e.message}). Coba muat ulang halaman, atau periksa koneksi internet.</div>
+      <button class="btn ghost" style="margin-top:10px;" onclick="renderStart()">Kembali ke Daftar Modul</button>`;
+    return;
+  }
+  renderIdentityForm();
+}
+
+/* ================= RENDER: IDENTITY FORM ================= */
+function renderIdentityForm(){
+  const m = MODULES[state.moduleId];
+  document.getElementById('topSub').textContent = m.title;
+  document.getElementById('content').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:16px;" onclick="renderStart()">&larr; Pilih Modul Lain</button>
+    <h2>${m.title}</h2>
+    <p style="color:var(--grey);font-size:14.5px;line-height:1.6;">
+      Nilai kelulusan (KKM) Post-Test modul ini adalah <b>${m.kkm}</b>. Jika nilai Anda di bawah KKM, Anda akan dijadwalkan
+      mengikuti <b>pelatihan tatap muka (offline)</b> sebagai remediasi.
+    </p>
+    <div class="card">
+      <label>Nomor Induk Pegawai (NIP)</label>
+      <input type="text" id="inpNip" value="${state.staffId}" placeholder="Contoh: 12108271" oninput="onNipInput()" inputmode="numeric">
+      <div id="nipMatch" style="margin-bottom:16px;"></div>
+      <div id="startBtnArea"><button class="btn" id="startBtn" disabled>Mulai Pre-Test</button></div>
+    </div>
+  `;
+  if(state.staffId){ onNipInput(); }
+}
+async function checkExistingAttempt(moduleId, staffId){
+  try{
+    const result = await listAllRecords();
+    if(!result || !result.records) return null;
+    const matches = result.records.filter(r => r.moduleId === moduleId && r.staffId === staffId);
+    if(!matches.length) return null;
+    matches.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+    return matches[0];
+  }catch(e){ return null; }
+}
+async function onNipInput(){
+  const nip = document.getElementById('inpNip').value.trim();
+  const matchDiv = document.getElementById('nipMatch');
+  const btnArea = document.getElementById('startBtnArea');
+  if(!nip){
+    matchDiv.innerHTML = '';
+    btnArea.innerHTML = `<button class="btn" id="startBtn" disabled>Mulai Pre-Test</button>`;
+    return;
+  }
+  matchDiv.innerHTML = `<div style="font-size:13px;color:var(--grey);">Memeriksa...</div>`;
+  const match = await findByNip(nip);
+  if(document.getElementById('inpNip').value.trim() !== nip) return;
+  if(!match){
+    matchDiv.innerHTML = `<div class="banner warn" style="margin-bottom:0;">Nomor Induk tidak ditemukan di daftar pegawai. Periksa kembali angkanya, atau hubungi admin diklat.</div>`;
+    btnArea.innerHTML = `<button class="btn" id="startBtn" disabled>Mulai Pre-Test</button>`;
+    return;
+  }
+  matchDiv.innerHTML = `<div class="banner info" style="margin-bottom:0;">Nama: <b>${match.nama}</b> — pastikan ini benar data Anda sebelum melanjutkan.</div>`;
+  btnArea.innerHTML = `<button class="btn" onclick="startFlow()">Mulai Pre-Test</button>`;
+  const existing = await checkExistingAttempt(state.moduleId, nip);
+  if(document.getElementById('inpNip').value.trim() !== nip) return;
+  if(existing && existing.status === 'Kompeten'){
+    matchDiv.innerHTML += `<div class="banner info" style="margin-top:8px;margin-bottom:0;">Anda sudah pernah dinyatakan <b>Kompeten</b> pada modul ini (Skor Post-Test: <b>${existing.posttestScore}</b>). Anda boleh langsung baca materi sebagai penyegaran (tanpa test), atau mengulang test dari awal untuk sertifikasi ulang.</div>`;
+    btnArea.innerHTML = `<button class="btn" onclick="startReadOnlyMateri()">Baca Materi (Refresher, Tanpa Test)</button>
+      <button class="btn ghost" style="margin-left:8px;" onclick="startFlow()">Ulangi Test dari Awal</button>`;
+  }else if(existing){
+    matchDiv.innerHTML += `<div class="banner warn" style="margin-top:8px;margin-bottom:0;">Anda sebelumnya sudah pernah mengikuti modul ini (Status terakhir: <b>${existing.status}</b>, Skor Post-Test: <b>${existing.posttestScore}</b>). Boleh mengulang dari Pre-Test, atau langsung ke Materi tanpa Pre-Test.</div>`;
+    btnArea.innerHTML = `<button class="btn" onclick="startFlow()">Ulangi dari Pre-Test</button>
+      <button class="btn ghost" style="margin-left:8px;" onclick="startFlowSkipPretest()">Langsung ke Materi (Lewati Pre-Test)</button>`;
+  }
+}
+async function startReadOnlyMateri(){
+  const nip = document.getElementById('inpNip').value.trim();
+  const match = await findByNip(nip);
+  if(!match){ alert('Nomor Induk tidak ditemukan di daftar pegawai.'); return; }
+  state.name = match.nama; state.staffId = nip;
+  state.pretestScore = null;
+  state.readOnlyMode = true;
+  startMateri();
+}
+async function startFlowSkipPretest(){
+  const nip = document.getElementById('inpNip').value.trim();
+  const match = await findByNip(nip);
+  if(!match){ alert('Nomor Induk tidak ditemukan di daftar pegawai.'); return; }
+  state.name = match.nama; state.staffId = nip;
+  state.pretestScore = null;
+  state.readOnlyMode = false;
+  startMateri();
+}
+async function startFlow(){
+  const nip = document.getElementById('inpNip').value.trim();
+  const match = await findByNip(nip);
+  if(!match){ alert('Nomor Induk tidak ditemukan di daftar pegawai.'); return; }
+  state.name = match.nama; state.staffId = nip;
+  state.readOnlyMode = false;
+  const m = MODULES[state.moduleId];
+  currentPhase = 'pretest'; currentQIdx = 0; state.pretestAnswers = new Array(m.questions.length).fill(null);
+  renderQuiz();
+}
+
+/* ================= RENDER: QUIZ (shared by pre/post) ================= */
+function renderQuiz(){
+  const m = MODULES[state.moduleId];
+  const answers = currentPhase === 'pretest' ? state.pretestAnswers : state.posttestAnswers;
+  const q = m.questions[currentQIdx];
+  const label = currentPhase === 'pretest' ? 'PRE-TEST' : 'POST-TEST';
+  document.getElementById('topSub').textContent = label + " — " + m.title;
+  let progHtml = '<div class="progress">';
+  for(let i=0;i<m.questions.length;i++){
+    progHtml += `<div class="${i<currentQIdx?'done':(i===currentQIdx?'now':'')}"></div>`;
+  }
+  progHtml += '</div>';
+
+  let optsHtml = '';
+  q.opts.forEach((o,i)=>{
+    const sel = answers[currentQIdx]===i ? 'selected' : '';
+    optsHtml += `<div class="opt ${sel}" onclick="selectAnswer(${i})">
+      <input type="radio" name="opt" ${answers[currentQIdx]===i?'checked':''} readonly>
+      <div class="otext">${o}</div>
+    </div>`;
+  });
+
+  document.getElementById('content').innerHTML = `
+    ${progHtml}
+    <div class="qnum">SOAL ${currentQIdx+1} DARI ${m.questions.length}</div>
+    <div class="qtext">${q.q}</div>
+    ${optsHtml}
+    <div class="navrow">
+      <button class="btn ghost" onclick="prevQ()" ${currentQIdx===0?'disabled':''}>Sebelumnya</button>
+      <button class="btn" id="nextBtn" onclick="nextQ()" ${answers[currentQIdx]===null?'disabled':''}>${currentQIdx===m.questions.length-1?'Selesai':'Berikutnya'}</button>
+    </div>
+  `;
+}
+function selectAnswer(i){
+  const answers = currentPhase === 'pretest' ? state.pretestAnswers : state.posttestAnswers;
+  answers[currentQIdx] = i;
+  renderQuiz();
+}
+function prevQ(){ if(currentQIdx>0){ currentQIdx--; renderQuiz(); } }
+function nextQ(){
+  const m = MODULES[state.moduleId];
+  if(currentQIdx < m.questions.length-1){ currentQIdx++; renderQuiz(); }
+  else{
+    const btn = document.getElementById('nextBtn');
+    if(btn){ btn.disabled = true; btn.textContent = 'Memproses...'; }
+    finishQuiz();
+  }
+}
+function finishQuiz(){
+  const m = MODULES[state.moduleId];
+  const answers = currentPhase === 'pretest' ? state.pretestAnswers : state.posttestAnswers;
+  let correct = 0;
+  answers.forEach((a,i)=>{ if(a === m.questions[i].correct) correct++; });
+  const score = Math.round((correct / m.questions.length) * 100);
+  if(currentPhase === 'pretest'){
+    state.pretestScore = score;
+    renderPretestDone();
+  }else{
+    state.posttestScore = score;
+    finalizeAndShowResult();
+  }
+}
+
+/* ================= PRETEST DONE -> MATERI ================= */
+function renderPretestDone(){
+  const m = MODULES[state.moduleId];
+  const total = moduleContentCount(m);
+  const unitLabel = m.slides ? 'slide' : 'halaman';
+  document.getElementById('topSub').textContent = "Hasil Pre-Test — " + state.name;
+  document.getElementById('content').innerHTML = `
+    <div class="banner info">Pre-Test selesai. Skor awal Anda: <b>${state.pretestScore}</b>. Skor ini adalah baseline sebelum membaca materi — lanjutkan ke materi pelatihan.</div>
+    <div class="card">
+      <h3 style="margin-bottom:10px;">Langkah Berikutnya</h3>
+      <p style="color:var(--grey);font-size:14px;">Baca seluruh materi (${total} ${unitLabel}) sebelum mengerjakan Post-Test. Anda wajib membuka semua ${unitLabel} sampai akhir.</p>
+      <button class="btn" onclick="startMateri()">Buka Materi</button>
+    </div>
+  `;
+}
+function startMateri(){
+  state.slideIdx = 0;
+  renderMateri();
+}
+function renderContentSection(sec){
+  let html = `<div class="matcard">`;
+  if(sec.eyebrow) html += `<div class="eyebrow">${sec.eyebrow}</div>`;
+  if(sec.title) html += `<h2>${sec.title}</h2>`;
+  if(sec.body) html += `<p class="matbody">${sec.body}</p>`;
+  if(sec.bullets) html += `<ul class="matlist">${sec.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>`;
+  if(sec.numbered) html += `<ol class="matnumbered">${sec.numbered.map(b=>`<li>${b}</li>`).join('')}</ol>`;
+  if(sec.table){
+    html += `<table class="mattable"><thead><tr>${sec.table.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>`;
+    sec.table.rows.forEach(r=>{ html += `<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`; });
+    html += `</tbody></table>`;
+  }
+  if(sec.columns){
+    html += `<div class="matcolumns">`;
+    sec.columns.forEach(col=>{
+      html += `<div class="matcol"><h4>${col.title}</h4><ul>${col.bullets.map(b=>`<li>${b}</li>`).join('')}</ul></div>`;
+    });
+    html += `</div>`;
+  }
+  if(sec.checklist){
+    html += `<div class="matchecklist">${sec.checklist.map(c=>`<div class="checkitem">✓ ${c}</div>`).join('')}</div>`;
+  }
+  if(sec.note){ html += `<div class="matnote">${sec.note}</div>`; }
+  html += `</div>`;
+  return html;
+}
+function renderMateri(){
+  const m = MODULES[state.moduleId];
+  document.getElementById('topSub').textContent = "Materi Pelatihan — " + state.name;
+  const total = moduleContentCount(m);
+  const isLast = state.slideIdx === total - 1;
+  const mediaHtml = m.slides
+    ? `<img class="slideimg" src="${m.slides[state.slideIdx]}" alt="Slide ${state.slideIdx+1}">`
+    : `<div class="mpage-wrap">${m.materiPages[state.slideIdx]}</div>`;
+  document.getElementById('content').innerHTML = `
+    ${mediaHtml}
+    <div class="slidecounter">${state.slideIdx+1} dari ${total}</div>
+    <div class="navrow">
+      <button class="btn ghost" onclick="prevSlide()" ${state.slideIdx===0?'disabled':''}>Sebelumnya</button>
+      ${isLast
+        ? (state.readOnlyMode
+            ? `<button class="btn amber" onclick="renderStart()">Selesai — Kembali ke Daftar Modul</button>`
+            : `<button class="btn amber" onclick="goToPosttest()">Lanjut ke Post-Test</button>`)
+        : `<button class="btn" onclick="nextSlide()">Berikutnya</button>`}
+    </div>
+  `;
+}
+function prevSlide(){ if(state.slideIdx>0){ state.slideIdx--; renderMateri(); } }
+function nextSlide(){ const m = MODULES[state.moduleId]; const total = moduleContentCount(m); if(state.slideIdx < total-1){ state.slideIdx++; renderMateri(); } }
+function goToPosttest(){
+  const m = MODULES[state.moduleId];
+  currentPhase = 'posttest'; currentQIdx = 0; state.posttestAnswers = new Array(m.questions.length).fill(null);
+  resultLock = false;
+  renderQuiz();
+}
+
+/* ================= FINAL RESULT ================= */
+let resultLock = false;
+async function getPreviousAttemptNumber(moduleId, staffId){
+  try{
+    const result = await listAllRecords();
+    if(!result || !result.records) return 0;
+    return result.records.filter(r => r.moduleId === moduleId && r.staffId === staffId).length;
+  }catch(e){ return 0; }
+}
+async function finalizeAndShowResult(){
+  if(resultLock) return;
+  resultLock = true;
+  const m = MODULES[state.moduleId];
+  const passed = state.posttestScore >= m.kkm;
+  const prevAttempts = await getPreviousAttemptNumber(state.moduleId, state.staffId);
+  const attemptNumber = prevAttempts + 1;
+  const record = {
+    moduleId: state.moduleId,
+    moduleTitle: m.title,
+    staffId: state.staffId,
+    name: state.name,
+    pretestScore: state.pretestScore,
+    posttestScore: state.posttestScore,
+    status: passed ? 'Kompeten' : 'Perlu Remediasi Tatap Muka',
+    timestamp: new Date().toISOString(),
+    attemptNumber: attemptNumber
+  };
+  const saveResult = await saveRecord(record);
+  document.getElementById('topSub').textContent = "Hasil Akhir — " + state.name;
+  const stillHasRetry = !passed && attemptNumber < 3;
+  const circleColor = passed ? 'var(--good)' : (stillHasRetry ? 'var(--amber)' : 'var(--danger)');
+  let reviewHtml = '';
+  m.questions.forEach((q,i)=>{
+    const ans = state.posttestAnswers[i];
+    const isCorrect = ans === q.correct;
+    reviewHtml += `<div class="card" style="margin-bottom:10px;">
+      <div class="qtext" style="font-size:14px;">${i+1}. ${q.q}</div>
+      <div style="font-size:13px;color:${isCorrect?'var(--good)':'var(--danger)'};font-weight:600;margin-bottom:4px;">
+        Jawaban Anda: ${q.opts[ans]} ${isCorrect ? '(Benar)' : '(Kurang tepat)'}
+      </div>
+      ${!isCorrect ? `<div style="font-size:13px;color:var(--grey);">Jawaban tepat: ${q.opts[q.correct]}</div>` : ''}
+      <div style="font-size:12.5px;color:var(--grey);margin-top:4px;font-style:italic;">${q.exp}</div>
+    </div>`;
+  });
+  const saveWarningHtml = !saveResult.ok
+    ? `<div class="banner warn" style="text-align:left;">
+         <b>Hasil ini belum berhasil tersimpan ke sistem</b> (sudah dicoba ${saveResult.attempts || 1}x).
+         Ini kemungkinan gangguan koneksi atau server sesaat. Coba klik "Simpan Lagi" dulu. Kalau masih gagal,
+         salin ringkasan hasil dan kirim manual ke admin diklat sebagai cadangan.
+         <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+           <button class="btn ghost" onclick="retrySaveRecord()">Simpan Lagi</button>
+           <button class="btn ghost" onclick="copyResultSummary()">Salin Ringkasan Hasil</button>
+         </div>
+       </div>`
+    : '';
+  let statusHeading, statusMessageHtml, actionButtonsHtml;
+  if(passed){
+    statusHeading = 'Kompeten';
+    statusMessageHtml = `<div class="banner info" style="text-align:left;">${saveResult.ok ? 'Selamat! Anda dinyatakan kompeten pada modul ini. Hasil telah tercatat secara otomatis.' : 'Selamat! Anda dinyatakan kompeten pada modul ini.'}</div>`;
+    actionButtonsHtml = `<button class="btn" style="margin-top:8px;" onclick="renderStart()">Kembali ke Daftar Modul</button>`;
+  }else if(stillHasRetry){
+    statusHeading = 'Belum Lulus — Coba Lagi';
+    const saran = attemptNumber === 1 ? 'baca ulang materi' : 'pelajari kembali materi dengan lebih teliti';
+    statusMessageHtml = `<div class="banner warn" style="text-align:left;">Skor Post-Test Anda (${state.posttestScore}) masih di bawah KKM (${m.kkm}). Silakan ${saran}, lalu coba Post-Test sekali lagi. <b>(Percobaan ke-${attemptNumber} dari maksimal 3 sebelum dijadwalkan pelatihan tatap muka.)</b>${saveResult.ok ? ' Hasil percobaan ini telah tercatat.' : ''}</div>`;
+    actionButtonsHtml = `<button class="btn amber" style="margin-top:8px;" onclick="startMateri()">Baca Ulang Materi &amp; Coba Lagi</button>
+      <button class="btn ghost" style="margin-top:8px;margin-left:8px;" onclick="renderStart()">Kembali ke Daftar Modul</button>`;
+  }else{
+    statusHeading = 'Perlu Remediasi Tatap Muka';
+    statusMessageHtml = `<div class="banner warn" style="text-align:left;">Skor Post-Test Anda masih di bawah KKM (${m.kkm}) setelah ${attemptNumber} kali percobaan. Anda akan dijadwalkan mengikuti <b>pelatihan tatap muka (offline)</b> oleh Kepala Instalasi Farmasi / bagian Diklat.${saveResult.ok ? ' Hasil ini telah tercatat.' : ''}</div>`;
+    actionButtonsHtml = `<button class="btn" style="margin-top:8px;" onclick="renderStart()">Kembali ke Daftar Modul</button>`;
+  }
+  document.getElementById('content').innerHTML = `
+    <div class="resultbig">
+      <div class="scorecircle" style="background:${circleColor};">${state.posttestScore}</div>
+      <h2>${statusHeading}</h2>
+      <p style="color:var(--grey);font-size:14px;">${m.title}</p>
+      <p style="color:var(--grey);font-size:14px;">Skor Pre-Test: <b>${state.pretestScore !== null ? state.pretestScore : 'Dilewati'}</b> &nbsp;→&nbsp; Skor Post-Test: <b>${state.posttestScore}</b> &nbsp;(KKM: ${m.kkm})</p>
+      ${saveWarningHtml}
+      ${statusMessageHtml}
+      ${actionButtonsHtml}
+    </div>
+    <h3 style="margin-top:6px;">Pembahasan Jawaban</h3>
+    ${reviewHtml}
+  `;
+  window._lastRecordForCopy = record;
+}
+async function retrySaveRecord(){
+  const r = window._lastRecordForCopy;
+  if(!r) return;
+  const btn = event ? event.target : null;
+  if(btn){ btn.disabled = true; btn.textContent = 'Menyimpan...'; }
+  const result = await saveRecord(r);
+  if(result.ok){
+    alert('Berhasil! Hasil sudah tersimpan ke sistem.');
+    renderStart();
+  }else{
+    alert('Masih gagal tersimpan. Coba lagi sebentar lagi, atau gunakan tombol "Salin Ringkasan Hasil" untuk kirim manual ke admin.');
+    if(btn){ btn.disabled = false; btn.textContent = 'Simpan Lagi'; }
+  }
+}
+function copyResultSummary(){
+  const r = window._lastRecordForCopy;
+  if(!r) return;
+  const text = `Hasil Diklat\nNama: ${r.name}\nNIP: ${r.staffId}\nModul: ${r.moduleTitle}\nSkor Pre-Test: ${r.pretestScore !== null && r.pretestScore !== undefined ? r.pretestScore : "Dilewati"}\nSkor Post-Test: ${r.posttestScore}\nStatus: ${r.status}\nWaktu: ${new Date(r.timestamp).toLocaleString('id-ID')}`;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>alert('Ringkasan hasil disalin. Silakan tempel & kirim ke admin.'));
+  }else{
+    prompt('Salin teks berikut dan kirim ke admin:', text);
+  }
+}
+
+/* ================= ADMIN ================= */
+function showAdminGate(){
+  document.getElementById('topSub').textContent = "Dashboard Admin";
+  document.getElementById('content').innerHTML = `
+    <div class="card" style="max-width:380px;">
+      <h3>Masuk Dashboard Admin</h3>
+      <label>Kata Sandi</label>
+      <input type="password" id="adminPass" placeholder="Masukkan kata sandi admin">
+      <div style="margin-top:14px;"><button class="btn" onclick="checkAdminPass()">Masuk</button></div>
+      <p style="font-size:11.5px;color:var(--grey);margin-top:10px;">Catatan: data hasil tersimpan bersama (shared) di dalam artifact ini dan dapat dilihat siapa pun yang membuka tautan pelatihan ini. Bagikan tautan hanya kepada staf & admin yang berwenang.</p>
+    </div>
+  `;
+}
+function checkAdminPass(){
+  const p = document.getElementById('adminPass').value;
+  if(p === 'farmasi2026'){ renderAdminDashboard(); }
+  else{ alert('Kata sandi salah.'); }
+}
+async function renderAdminDashboard(){
+  document.getElementById('content').innerHTML = `<p>Memuat data & modul...</p>`;
+  await ensureAllModulesLoaded();
+  const result = await listAllRecords();
+  window._loadError = result.error ? (result.message || 'Gagal memuat data.') : null;
+  window._lastRecords = result.records;
+  renderAdminBody();
+}
+function setAdminModuleFilter(id){ adminModuleFilter = id; renderAdminBody(); }
+async function testStorageConnection(){
+  const el = document.getElementById('storageTestResult');
+  if(el) el.innerHTML = `<div class="banner info">Menguji koneksi ke Google Sheets (via Apps Script)...</div>`;
+  const result = await listAllRecords();
+  if(result.error){
+    if(el) el.innerHTML = `<div class="banner warn"><b>Gagal:</b> ${result.message || 'Tidak bisa menghubungi Apps Script.'} Cek kembali GAPPS_SCRIPT_URL di kode, dan pastikan deployment Apps Script masih aktif dengan akses "Anyone".</div>`;
+    return;
+  }
+  if(el) el.innerHTML = `<div class="banner info"><b>Berhasil.</b> Bisa membaca data dari Google Sheets (ditemukan ${result.records.length} baris data). Kalau data peserta tertentu tetap tidak muncul, kemungkinan pengiriman form-nya yang gagal, bukan pembacaannya.</div>`;
+}
+function setAdminViewMode(mode){ adminViewMode = mode; renderAdminBody(); }
+
+function renderAdminBody(){
+  const allRecords = window._lastRecords || [];
+  const records = adminModuleFilter === 'all' ? allRecords : allRecords.filter(r=>r.moduleId===adminModuleFilter);
+  const total = records.length;
+  const passCount = records.filter(r=>r.status==='Kompeten').length;
+  const failCount = total - passCount;
+  const avgPost = total ? Math.round(records.reduce((s,r)=>s+r.posttestScore,0)/total) : 0;
+
+  let tabsHtml = `<div class="tab ${adminModuleFilter==='all'?'active':''}" onclick="setAdminModuleFilter('all')">Semua Modul</div>`;
+  Object.keys(MODULES).forEach(id=>{
+    tabsHtml += `<div class="tab ${adminModuleFilter===id?'active':''}" onclick="setAdminModuleFilter('${id}')">${MODULES[id].title}</div>`;
+  });
+
+  let bodyHtml = '';
+  if(adminViewMode === 'detail'){
+    let rows = '';
+    const sorted = [...records].sort((a,b)=> new Date(b.timestamp) - new Date(a.timestamp));
+    sorted.forEach(r=>{
+      const badge = r.status === 'Kompeten' ? '<span class="badge pass">Kompeten</span>' : '<span class="badge fail">Perlu Remediasi</span>';
+      rows += `<tr>
+        <td>${r.name}</td><td>${r.staffId}</td><td>${r.moduleTitle||r.moduleId}</td><td>${r.pretestScore !== null && r.pretestScore !== undefined ? r.pretestScore : "Dilewati"}</td><td>${r.posttestScore}</td>
+        <td>${badge}</td><td>${new Date(r.timestamp).toLocaleString('id-ID')}</td>
+      </tr>`;
+    });
+    if(!records.length){ rows = `<tr><td colspan="7" style="text-align:center;color:var(--grey);padding:24px;">Belum ada data peserta.</td></tr>`; }
+    bodyHtml = `<div style="overflow-x:auto;">
+      <table><thead><tr><th>Nama</th><th>NIK/ID</th><th>Modul</th><th>Pre-Test</th><th>Post-Test</th><th>Status</th><th>Waktu</th></tr></thead>
+      <tbody>${rows}</tbody></table>
+    </div>`;
+  }else{
+    // pivot per staf x modul
+    const staffMap = {};
+    allRecords.forEach(r=>{
+      const key = r.staffId;
+      if(!staffMap[key]) staffMap[key] = { name:r.name, staffId:r.staffId, modules:{} };
+      staffMap[key].modules[r.moduleId] = r;
+    });
+    const moduleIds = Object.keys(MODULES);
+    let headCols = moduleIds.map(id=>`<th>${MODULES[id].title}</th>`).join('');
+    let rows = '';
+    Object.values(staffMap).forEach(s=>{
+      let cols = moduleIds.map(id=>{
+        const r = s.modules[id];
+        if(!r) return `<td><span class="badge pending">Belum Ikut</span></td>`;
+        const badge = r.status === 'Kompeten' ? `<span class="badge pass">Kompeten (${r.posttestScore})</span>` : `<span class="badge fail">Remediasi (${r.posttestScore})</span>`;
+        return `<td>${badge}</td>`;
+      }).join('');
+      rows += `<tr><td>${s.name}</td><td>${s.staffId}</td>${cols}</tr>`;
+    });
+    if(!Object.keys(staffMap).length){ rows = `<tr><td colspan="${2+moduleIds.length}" style="text-align:center;color:var(--grey);padding:24px;">Belum ada data peserta.</td></tr>`; }
+    bodyHtml = `<div style="overflow-x:auto;">
+      <table><thead><tr><th>Nama</th><th>NIK/ID</th>${headCols}</tr></thead>
+      <tbody>${rows}</tbody></table>
+    </div>`;
+  }
+
+  document.getElementById('content').innerHTML = `
+    ${window._loadError ? `<div class="banner warn">Gagal memuat data dari Google Sheets (${window._loadError}). Coba klik "Muat Ulang", atau cek manual di Google Sheets.</div>` : ''}
+
+    <div id="storageTestResult"></div>
+    <div class="toolbar">
+      <h2 style="margin:0;">Rekap Peserta</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn ghost" onclick="testStorageConnection()">Tes Koneksi Penyimpanan</button>
+        <button class="btn ghost" onclick="renderAdminDashboard()">Muat Ulang</button>
+        <button class="btn ghost" onclick="exportCsv()">Unduh CSV</button>
+        <button class="btn ghost" onclick="renderStart()">Ke Halaman Peserta</button>
+      </div>
+    </div>
+    <div class="tabs">${tabsHtml}</div>
+    <div class="tabs">
+      <div class="tab ${adminViewMode==='detail'?'active':''}" onclick="setAdminViewMode('detail')">Rekap per Percobaan</div>
+      <div class="tab ${adminViewMode==='pivot'?'active':''}" onclick="setAdminViewMode('pivot')">Rekap per Staf (lintas modul)</div>
+    </div>
+    <div class="statgrid">
+      <div class="statbox"><div class="num">${total}</div><div class="lbl">TOTAL PERCOBAAN</div></div>
+      <div class="statbox"><div class="num">${passCount}</div><div class="lbl">KOMPETEN</div></div>
+      <div class="statbox"><div class="num">${failCount}</div><div class="lbl">PERLU REMEDIASI</div></div>
+      <div class="statbox"><div class="num">${avgPost}</div><div class="lbl">RATA-RATA POST-TEST</div></div>
+    </div>
+    ${bodyHtml}
+  `;
+}
+function exportCsv(){
+  const allRecords = window._lastRecords || [];
+  const records = adminModuleFilter === 'all' ? allRecords : allRecords.filter(r=>r.moduleId===adminModuleFilter);
+  let csv = "Nama,NIK/ID,Modul,Pre-Test,Post-Test,Status,Waktu\n";
+  records.forEach(r=>{
+    csv += `"${r.name}","${r.staffId}","${r.moduleTitle||r.moduleId}",${r.pretestScore},${r.posttestScore},"${r.status}","${new Date(r.timestamp).toLocaleString('id-ID')}"\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'rekap_diklat_farmasi.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+/* ================= INIT ================= */
+renderStart();
+</script>
+</body>
+</html>
