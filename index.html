@@ -283,12 +283,12 @@ function fetchViaJsonp(url, timeoutMs){
       settled = true;
       cleanup();
       resolve({ error:true, message:'Waktu tunggu habis (timeout).' });
-    }, timeoutMs || 8000);
+    }, timeoutMs || 25000);
   });
 }
 async function listAllRecords(){
   try{
-    const rows = await fetchViaJsonp(GAPPS_SCRIPT_URL, 8000);
+    const rows = await fetchViaJsonp(GAPPS_SCRIPT_URL, 25000);
     if(rows && rows.error){ return { records:[], unavailable:false, error:true, message: rows.message }; }
     if(!Array.isArray(rows)){ return { records:[], unavailable:false, error:true, message:'Format data tidak dikenali.' }; }
     const records = rows.map(row => {
@@ -707,7 +707,7 @@ function checkAdminPass(){
   else{ alert('Kata sandi salah.'); }
 }
 async function renderAdminDashboard(){
-  document.getElementById('content').innerHTML = `<p>Memuat data & modul...</p>`;
+  document.getElementById('content').innerHTML = `<p>Memuat data & modul... (bisa sampai 20-30 detik kalau data sudah banyak, mohon tunggu)</p>`;
   await ensureAllModulesLoaded();
   const result = await listAllRecords();
   window._loadError = result.error ? (result.message || 'Gagal memuat data.') : null;
