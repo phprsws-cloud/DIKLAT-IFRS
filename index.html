@@ -404,6 +404,10 @@ async function onNipInput(){
     matchDiv.innerHTML += `<div class="banner info" style="margin-top:8px;margin-bottom:0;">Anda sudah pernah dinyatakan <b>Kompeten</b> pada modul ini (Skor Post-Test: <b>${existing.posttestScore}</b>). Anda boleh langsung baca materi sebagai penyegaran (tanpa test), atau mengulang test dari awal untuk sertifikasi ulang.</div>`;
     btnArea.innerHTML = `<button class="btn" onclick="startReadOnlyMateri()">Baca Materi (Refresher, Tanpa Test)</button>
       <button class="btn ghost" style="margin-left:8px;" onclick="startFlow()">Ulangi Test dari Awal</button>`;
+  }else if(existing && existing.status === 'Pretest Selesai (Menunggu Post-Test)'){
+    matchDiv.innerHTML += `<div class="banner info" style="margin-top:8px;margin-bottom:0;">Anda sudah menyelesaikan <b>Pre-Test</b> modul ini (Skor: <b>${existing.pretestScore}</b>) tapi belum Post-Test. Lanjutkan ke Materi &amp; Post-Test tanpa perlu mengulang Pre-Test.</div>`;
+    btnArea.innerHTML = `<button class="btn" onclick="resumeFromMateri(${existing.pretestScore})">Lanjutkan ke Materi</button>
+      <button class="btn ghost" style="margin-left:8px;" onclick="startFlow()">Ulangi dari Pre-Test</button>`;
   }else if(existing){
     matchDiv.innerHTML += `<div class="banner warn" style="margin-top:8px;margin-bottom:0;">Anda sebelumnya sudah pernah mengikuti modul ini (Status terakhir: <b>${existing.status}</b>, Skor Post-Test: <b>${existing.posttestScore}</b>). Boleh mengulang dari Pre-Test, atau langsung ke Materi tanpa Pre-Test.</div>`;
     btnArea.innerHTML = `<button class="btn" onclick="startFlow()">Ulangi dari Pre-Test</button>
@@ -417,6 +421,15 @@ async function startReadOnlyMateri(){
   state.name = match.nama; state.staffId = nip;
   state.pretestScore = null;
   state.readOnlyMode = true;
+  startMateri();
+}
+async function resumeFromMateri(savedPretestScore){
+  const nip = document.getElementById('inpNip').value.trim();
+  const match = await findByNip(nip);
+  if(!match){ alert('Nomor Induk tidak ditemukan di daftar pegawai.'); return; }
+  state.name = match.nama; state.staffId = nip;
+  state.pretestScore = savedPretestScore;
+  state.readOnlyMode = false;
   startMateri();
 }
 async function startFlowSkipPretest(){
@@ -487,7 +500,7 @@ function nextQ(){
     finishQuiz();
   }
 }
-function finishQuiz(){
+async function finishQuiz(){
   const m = MODULES[state.moduleId];
   const answers = currentPhase === 'pretest' ? state.pretestAnswers : state.posttestAnswers;
   let correct = 0;
@@ -495,11 +508,27 @@ function finishQuiz(){
   const score = Math.round((correct / m.questions.length) * 100);
   if(currentPhase === 'pretest'){
     state.pretestScore = score;
+    document.getElementById('content').innerHTML = `<p style="color:var(--grey);">Menyimpan progres Pre-Test...</p>`;
+    await savePretestCheckpoint();
     renderPretestDone();
   }else{
     state.posttestScore = score;
     finalizeAndShowResult();
   }
+}
+async function savePretestCheckpoint(){
+  const m = MODULES[state.moduleId];
+  const record = {
+    moduleId: state.moduleId,
+    moduleTitle: m.title,
+    staffId: state.staffId,
+    name: state.name,
+    pretestScore: state.pretestScore,
+    posttestScore: 0,
+    status: 'Pretest Selesai (Menunggu Post-Test)',
+    timestamp: new Date().toISOString()
+  };
+  try{ await saveRecord(record); }catch(e){ console.error('checkpoint save failed', e); }
 }
 
 /* ================= PRETEST DONE -> MATERI ================= */
@@ -583,7 +612,7 @@ async function getPreviousAttemptNumber(moduleId, staffId){
   try{
     const result = await listAllRecords();
     if(!result || !result.records) return 0;
-    return result.records.filter(r => r.moduleId === moduleId && r.staffId === staffId).length;
+    return result.records.filter(r => r.moduleId === moduleId && r.staffId === staffId && r.status !== 'Pretest Selesai (Menunggu Post-Test)').length;
   }catch(e){ return 0; }
 }
 async function finalizeAndShowResult(){
@@ -745,9 +774,11 @@ function renderAdminBody(){
     let rows = '';
     const sorted = [...records].sort((a,b)=> new Date(b.timestamp) - new Date(a.timestamp));
     sorted.forEach(r=>{
-      const badge = r.status === 'Kompeten' ? '<span class="badge pass">Kompeten</span>' : '<span class="badge fail">Perlu Remediasi</span>';
+      const badge = r.status === 'Kompeten' ? '<span class="badge pass">Kompeten</span>'
+        : r.status === 'Pretest Selesai (Menunggu Post-Test)' ? '<span class="badge pending">Pre-Test Selesai</span>'
+        : '<span class="badge fail">Perlu Remediasi</span>';
       rows += `<tr>
-        <td>${r.name}</td><td>${r.staffId}</td><td>${r.moduleTitle||r.moduleId}</td><td>${r.pretestScore !== null && r.pretestScore !== undefined ? r.pretestScore : "Dilewati"}</td><td>${r.posttestScore}</td>
+        <td>${r.name}</td><td>${r.staffId}</td><td>${r.moduleTitle||r.moduleId}</td><td>${r.pretestScore !== null && r.pretestScore !== undefined ? r.pretestScore : "Dilewati"}</td><td>${r.status === 'Pretest Selesai (Menunggu Post-Test)' ? '—' : r.posttestScore}</td>
         <td>${badge}</td><td>${new Date(r.timestamp).toLocaleString('id-ID')}</td>
       </tr>`;
     });
@@ -771,7 +802,9 @@ function renderAdminBody(){
       let cols = moduleIds.map(id=>{
         const r = s.modules[id];
         if(!r) return `<td><span class="badge pending">Belum Ikut</span></td>`;
-        const badge = r.status === 'Kompeten' ? `<span class="badge pass">Kompeten (${r.posttestScore})</span>` : `<span class="badge fail">Remediasi (${r.posttestScore})</span>`;
+        const badge = r.status === 'Kompeten' ? `<span class="badge pass">Kompeten (${r.posttestScore})</span>`
+          : r.status === 'Pretest Selesai (Menunggu Post-Test)' ? `<span class="badge pending">Pre-Test Selesai (${r.pretestScore})</span>`
+          : `<span class="badge fail">Remediasi (${r.posttestScore})</span>`;
         return `<td>${badge}</td>`;
       }).join('');
       rows += `<tr><td>${s.name}</td><td>${s.staffId}</td>${cols}</tr>`;
