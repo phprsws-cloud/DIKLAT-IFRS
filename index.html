@@ -398,6 +398,14 @@ async function onNipInput(){
   }
   matchDiv.innerHTML = `<div class="banner info" style="margin-bottom:0;">Nama: <b>${match.nama}</b> — pastikan ini benar data Anda sebelum melanjutkan.</div>`;
   btnArea.innerHTML = `<button class="btn" onclick="startFlow()">Mulai Pre-Test</button>`;
+  const localProgress = loadPosttestProgressLocal(state.moduleId, nip);
+  if(localProgress){
+    const m = MODULES[state.moduleId];
+    matchDiv.innerHTML += `<div class="banner warn" style="margin-top:8px;margin-bottom:0;">Terdeteksi Post-Test yang belum selesai di perangkat ini &mdash; terhenti di soal <b>${localProgress.currentQIdx+1} dari ${m.questions.length}</b>. Lanjutkan dari situ tanpa perlu baca ulang materi.</div>`;
+    btnArea.innerHTML = `<button class="btn" onclick="resumePosttestFromLocal()">Lanjutkan Post-Test dari Soal Terakhir</button>
+      <button class="btn ghost" style="margin-left:8px;" onclick="startFlow()">Mulai Ulang dari Pre-Test</button>`;
+    return;
+  }
   const existing = await checkExistingAttempt(state.moduleId, nip);
   if(document.getElementById('inpNip').value.trim() !== nip) return;
   if(existing && existing.status === 'Kompeten'){
@@ -447,6 +455,7 @@ async function startFlow(){
   if(!match){ alert('Nomor Induk tidak ditemukan di daftar pegawai.'); return; }
   state.name = match.nama; state.staffId = nip;
   state.readOnlyMode = false;
+  clearPosttestProgressLocal(state.moduleId, nip);
   const m = MODULES[state.moduleId];
   currentPhase = 'pretest'; currentQIdx = 0; state.pretestAnswers = new Array(m.questions.length).fill(null);
   renderQuiz();
@@ -485,9 +494,52 @@ function renderQuiz(){
     </div>
   `;
 }
+/* ================= LOCAL PROGRESS (resume Post-Test di perangkat sama) ================= */
+function posttestProgressKey(moduleId, staffId){ return 'posttestProgress:' + moduleId + ':' + staffId; }
+function savePosttestProgressLocal(){
+  if(currentPhase !== 'posttest' || !state.moduleId || !state.staffId) return;
+  try{
+    const payload = {
+      currentQIdx: currentQIdx,
+      posttestAnswers: state.posttestAnswers,
+      pretestScore: state.pretestScore,
+      name: state.name,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem(posttestProgressKey(state.moduleId, state.staffId), JSON.stringify(payload));
+  }catch(e){ /* localStorage tidak tersedia, abaikan */ }
+}
+function loadPosttestProgressLocal(moduleId, staffId){
+  try{
+    const raw = localStorage.getItem(posttestProgressKey(moduleId, staffId));
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function clearPosttestProgressLocal(moduleId, staffId){
+  try{ localStorage.removeItem(posttestProgressKey(moduleId, staffId)); }catch(e){}
+}
+async function resumePosttestFromLocal(){
+  const nip = document.getElementById('inpNip').value.trim();
+  const match = await findByNip(nip);
+  if(!match){ alert('Nomor Induk tidak ditemukan di daftar pegawai.'); return; }
+  const progress = loadPosttestProgressLocal(state.moduleId, nip);
+  if(!progress){ alert('Progres tidak ditemukan di perangkat ini.'); return; }
+  await loadModule(state.moduleId);
+  state.name = match.nama; state.staffId = nip;
+  state.pretestScore = progress.pretestScore;
+  state.posttestAnswers = progress.posttestAnswers;
+  state.readOnlyMode = false;
+  currentPhase = 'posttest';
+  currentQIdx = progress.currentQIdx;
+  resultLock = false;
+  renderQuiz();
+}
+
 function selectAnswer(i){
   const answers = currentPhase === 'pretest' ? state.pretestAnswers : state.posttestAnswers;
   answers[currentQIdx] = i;
+  if(currentPhase === 'posttest'){ savePosttestProgressLocal(); }
   renderQuiz();
 }
 function prevQ(){ if(currentQIdx>0){ currentQIdx--; renderQuiz(); } }
@@ -618,6 +670,7 @@ async function getPreviousAttemptNumber(moduleId, staffId){
 async function finalizeAndShowResult(){
   if(resultLock) return;
   resultLock = true;
+  clearPosttestProgressLocal(state.moduleId, state.staffId);
   const m = MODULES[state.moduleId];
   const passed = state.posttestScore >= m.kkm;
   const prevAttempts = await getPreviousAttemptNumber(state.moduleId, state.staffId);
